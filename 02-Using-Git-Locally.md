@@ -1396,6 +1396,12 @@ Even the most accomplished developers make mistakes in Git. It happens to everyo
 
 ## Creating new branches
 
+- We can use the git branch command to list, ctraete, delete, and manipulate branches.
+- `git branch`: list all the branches
+- `git branch name`: to create new branch name *name*
+- `git checkout name`: switch to new branch *name*
+- `git checkout -b name`: create and switch to new branch
+
 ```console
 xxxxxxxxxxxxxxxxxxxx/Desktop/git
 $ cd checks/
@@ -1538,6 +1544,7 @@ Date:   Sun Feb 18 18:09:31 2024 +0530
 
     add a gitignore file ignoring .DS_STORE files
 ```
+- Notice how next to the latest commit ID, git shows that this is where head is pointing to and that the branch is called even better feature.
 
 ```console
 xxxxxxxxxxxxxxxxxxxx/Desktop/git/checks (master)
@@ -1614,6 +1621,11 @@ If you are sure you want to delete it, run 'git branch -D even-better-feature'.
 
 ## Merging
 
+- The term thet Git uses for combining branched data and history together.
+
+- We'll use the `git merge` command, which lets us take the independent snapshots and history of one Git branch, and tangle them into another.
+- First, will check that we're in master branch, and then we'll call git merge even-better-feature to merge the even-better-feature branch into the master branch.
+
 ```console
 xxxxxxxxxxxxxxxxxxxx/Desktop/git/checks (master)
 $ git branch
@@ -1659,8 +1671,18 @@ Date:   Sun Feb 18 22:44:41 2024 +0530
 
     This reverts commit cda000282c02fc83a9b55778fb3f193b35b2af94.
 ```
+- As we're on the master branch, HEAD points at master. We can see the even-better-feature and master branches are now both pointing at the same commit.
+
+- Git uses two different algorithms to perform a merge, fast-forward and three-way merge. The merge we just performed is an example of a fast-forward merge.
+
+- This kind of merge occurs when all the commits in the checked out branch are also in the branch that's being merged. If this is the case, we can say that the commit history of both branches doesn't diverge. In these cases, all Git has to do is update the pointers of the branches to the same commit, and no actual merging needs to take place. 
+
+---
+- On the other hand, a three-way merge is performed when the history of the merging branches has diverged in some way, and there isn't a nice linear path to combine them via fast-forwarding. This happens when a commit is made on one branch after the point when both branches split.
 
 ## Merge conflicts
+
+- Here git need a little bit help in merg
 
 ```console
 xxxxxxxxxxxxxxxxxxxx/Desktop/git/checks (master)
@@ -1780,6 +1802,8 @@ CONFLICT (content): Merge conflict in free_memory.py
 Automatic merge failed; fix conflicts and then commit the result.
 ```
 
+-  Git tells us it tried to automatically merge the two versions of the free memory file, but it didn't know how to do it. We can use Git's status to get more information about what's going on.
+
 ```console
 xxxxxxxxxxxxxxxxxxxx/Desktop/git/checks (master|MERGING)
 $ git status
@@ -1798,6 +1822,8 @@ Unmerged paths:
 
 no changes added to commit (use "git add" and/or "git commit -a")
 ```
+
+- It tells us that we have files that are currently unmerged, and that we need to fix the conflicts or abort the merge if we decide it was a mistake. It also tells us that we need to run Git add on each unmerged file to mark that the conflicts have been resolved. 
 
 ```console
 xxxxxxxxxxxxxxxxxxxx/Desktop/git/checks (master|MERGING)
@@ -1821,6 +1847,8 @@ def main():
 
 main()
 ```
+
+- To fix the conflict, let's open up free_memory.py in our text editor. Thankfully, Git has added some information to our files to tell us which parts of the code are conflicting. The unmerged content of the file at head, remember, in this case, head points to master, is the docstring stating what the main function should do. The unmerged content of the file in the even-better-feature branch is the call to the print function. It's up to us to decide which one to keep or if we should change the contents of the file altogether.
 
 ```console
 atom free_memory.py 
@@ -1849,6 +1877,8 @@ All conflicts fixed but you are still merging.
 Changes to be committed:
         modified:   free_memory.py
 ```
+
+-  Git now tells us that all conflicts have been resolved.
 
 ```console
 xxxxxxxxxxxxxxxxxxxx/Desktop/git/checks (master|MERGING)
@@ -1928,6 +1958,10 @@ $ git log --graph --oneline
 * ab5ade5 commit rest of the files--init commit.
 * ad401fc Add periods to the end of sentences.
 ```
+
+- This format helps us better understand the history of our commits and how merges have occurred. We can see the new commit that was added and also the two separate commits that we merged. One coming from the master branch and the other coming from the even-better-feature branch.
+
+- Merge conflicts can sometimes be tricky, complicated, and spread across multiple files. If you want to throw the merge away and start over, you can use the `git merge --abort` command as an escape hatch.
 
 ## Git branches and merging: summary
 
